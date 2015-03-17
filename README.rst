@@ -25,20 +25,21 @@ Quick start
         'imger',
     )
 
-4. Import ImgerField into your model and create an ImgerField a model class::
+4. Import ImgerField into your models.yp and create an ImgerField on a model::
 
     from imger.fields import ImgerField
 
 	...
-	image_path = ImgerField(upload_to='testing', width=400, height=300, mime='image/jpg', quality=80)
+	image_path = ImgerField(upload_to='testing', imger_settings={'width'=400, 'height'=300, 'quality'=80})
 
-	All parameters are optional and default as follows:
+	No documentation yet but for a quick reference imger_settings can include:
 
-	upload_to: settings.MEDIA_ROOT
-	width: 300
-	height: 200
-	mime: image/jpg
-	quality: 100
+	width :: default 300
+	height :: default 200
+	quality :: default 100
+	mime :: default 'image/jpeg'
+	autoborwse :: default true
+	note :: default ''
 
 5. Start the development server and visit http://127.0.0.1:8000/admin/
    Navigate to your model with the imger field and upolad an image

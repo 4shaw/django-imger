@@ -1,15 +1,13 @@
 from django import forms
 from django.utils.safestring import mark_safe
+import json
 
 
 class ImgerWidget(forms.Widget):
 
-    def __init__(self, attrs=None, *args, **kwargs):
-        self.width = attrs['width']
-        self.height = attrs['height']
-        self.mime = attrs['mime']
-        self.quality = attrs['quality']
-        super(ImgerWidget, self).__init__(*args, **kwargs)
+    def __init__(self, attrs=None, **kwargs):
+        self.imger_settings = attrs['imger_settings']
+        super(ImgerWidget, self).__init__(**kwargs)
 
     class Media:
         js = (
@@ -31,11 +29,7 @@ class ImgerWidget(forms.Widget):
         }
 
     def render(self, name, value, attrs=None):
-        w = self.width
-        h = self.height
-        t = self.mime
-        q = self.quality
+        imger_settings = self.imger_settings
+        imger_json = json.dumps(imger_settings)
 
-        print '%sX%s' % (w, h)
-
-        return mark_safe("%s<br/><button data-width=\"%s\" data-height=\"%s\" data-mime=\"%s\" data-quality=\"%s\" type=\"button\" id=\"ImgerBrowseBTN\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" />" % (value, w, h, t, q, name))
+        return mark_safe("%s<br/><button data-imger='%s' id=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" />" % (value, imger_json, name))

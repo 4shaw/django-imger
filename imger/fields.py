@@ -14,20 +14,13 @@ class ImgerField(models.Field):
     def __init__(
         self,
         upload_to='',
-        width=300,
-        height=200,
-        mime='image/jpg',
-        quality=100,
-        *args,
+        imger_settings=None,
         **kwargs
     ):
         self.upload_to = upload_to
-        self.width = width
-        self.height = height
-        self.mime = mime
-        self.quality = quality
+        self.imger_settings = imger_settings
 
-        super(ImgerField, self).__init__(*args, **kwargs)
+        super(ImgerField, self).__init__(**kwargs)
 
     def get_internal_type(self):
         return "Input"
@@ -84,18 +77,12 @@ class ImgerField(models.Field):
         return self.get_prep_value(value)"""
 
     def formfield(self, **kwargs):
-        w = self.width
-        h = self.height
-        t = self.mime
-        q = self.quality
+        imger_settings = self.imger_settings
 
         defaults = {
             'widget': ImgerWidget(
                 attrs={
-                    'width': w,
-                    'height': h,
-                    'mime': t,
-                    'quality': q
+                    'imger_settings': imger_settings,
                 }
             )
         }
