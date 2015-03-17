@@ -4,6 +4,7 @@ from imger.widgets import ImgerWidget
 from django.conf import settings
 import json
 import re
+import os
 
 
 class ImgerField(models.Field):
@@ -44,11 +45,18 @@ class ImgerField(models.Field):
                 imgstr = re.search(r'base64,(.*)', dataurl).group(1)
 
                 media_path = settings.MEDIA_ROOT
-                path = r'%s/%s/%s' % (
+                path = r'%s/%s' % (
                     media_path,
-                    self.upload_to,
-                    formdata['imagename']
+                    self.upload_to
                 )
+
+                if not path.endswith('/'):
+                    path = r'%s/' % (path)
+
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
+                path = r'%s%s' % (path, formdata['imagename'])
 
                 output = open(path, 'wb')
                 output.write(imgstr.decode('base64'))
