@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.safestring import mark_safe
+from django.conf import settings
 import json
 
 
@@ -32,4 +33,9 @@ class ImgerWidget(forms.Widget):
         imger_settings = self.imger_settings
         imger_json = json.dumps(imger_settings)
 
-        return mark_safe("%s<br/><button data-imger='%s' id=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" />" % (value, imger_json, name))
+        static_url = settings.STATIC_URL
+
+        if not static_url.endswith('/'):
+            static_url = r'%s/' % (static_url)
+
+        return mark_safe("%s<br/><button data-static_url=\"%s\" data-imger='%s' id=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" />" % (value, static_url, imger_json, name))

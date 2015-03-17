@@ -1,5 +1,6 @@
 $(document).ready(function (e){
 	var $browseBtn = $('#ImgerBrowseBTN');
+	var static_url = $browseBtn.attr('data-static_url');;
 	var user_settings = $browseBtn.attr('data-imger');
 	user_settings = JSON.parse(user_settings);
 
@@ -9,7 +10,7 @@ $(document).ready(function (e){
 		mime: 'image/jpeg',
 		quality: 100,
 		autoborwse: true,
-		note: '',
+		note: "",
 		form: 'imger.imagename',
 	}
 
@@ -25,7 +26,7 @@ $(document).ready(function (e){
 	}
 
 	imger = new Imger({
-		templateUrl: "/static/imger/templates/theme-standard.html"
+		templateUrl: static_url + "imger/templates/theme-standard.html"
 	});
 
 	$('#ImgerBrowseBTN').click(function(e){

@@ -9,13 +9,13 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-imger',
-    version='0.1',
+    version='0.2',
     packages=['imger'],
     include_package_data=True,
     license='BSD License',  # example license
     description='A Django app that ties into django\'s admin and allows client side resizing and placement of images.',
     long_description=README,
-    url='http://www.imger.4shaw.digital/',
+    url='https://github.com/4shaw/django-imger',
     author='Brett Shaw',
     author_email='b4shaw@gamil.com',
     classifiers=[
