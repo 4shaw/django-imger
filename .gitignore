@@ -1,0 +1,6 @@
+# Python compiled byte code
+*.pyc
+
+# packaging
+dist/
+django_imger.egg-info/
