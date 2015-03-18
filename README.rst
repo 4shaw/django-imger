@@ -6,6 +6,8 @@ Imger is a client side resizing and placement tool for images.
 Images are stored in the settings.MEDIA_ROOT so settings.py needs to include:
 MEDIA_ROOT and MEDIA_URL
 
+https://github.com/4shaw/django-imger
+
 Quick start
 -----------
 
@@ -38,7 +40,7 @@ Quick start
 	height :: default 200
 	quality :: default 100
 	mime :: default 'image/jpeg'
-	autoborwse :: default true
+	autobrowse :: default true
 	note :: default ''
 
 5. Start the development server and visit http://127.0.0.1:8000/admin/

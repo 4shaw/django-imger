@@ -2,7 +2,7 @@
 	<div class="imger-window">
 		<div class="imger-display">
 			<div class="imger-user-info"></div>
-			<div class="canvas-wr">
+			<div class="canvas-wr alpha-bg">
 				<canvas class="imger-canvas" id="imger-canvas"></canvas>
 			</div>
 		</div>
@@ -21,24 +21,26 @@
 						</td>
 						<td></td>
 						<td class="imger-toolbar-auto-cell">
-							<div class="imger-img-url-wr">
-								<div class="input-group">
-									<input type="text" id="getURLInput" class="form-control" placeholder="Image URL" />
-									<span class="input-group-btn">
-										<button class="btn btn-default get-URL" type="button">
-											GET
-										</button>
-									</span>
+							<div class="imger-toolbar-tools-wr">
+								<div class="imger-img-url-wr">
+									<div class="input-group">
+										<input type="text" id="getURLInput" class="form-control" placeholder="Image URL" />
+										<span class="input-group-btn">
+											<button class="btn btn-default get-URL" type="button">
+												GET
+											</button>
+										</span>
+									</div>
 								</div>
+								<button class="btn btn-default imger-btn-browse">
+									<!--span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span-->
+									Browse
+								</button>
+								<button class="btn btn-info imger-btn-done">Done</button>
+								<button class="btn btn-default imger-btn-cancel">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
 							</div>
-							<button class="btn btn-default imger-btn-browse">
-								<!--span class="glyphicon glyphicon-folder-open" style="margin-right:5px;"></span-->
-								Browse
-							</button>
-							<button class="btn btn-info imger-btn-done">Done</button>
-							<button class="btn btn-default imger-btn-cancel">
-								<span class="glyphicon glyphicon-remove"></span>
-							</button>
 						</td>
 					</tr>
 				</tbody>

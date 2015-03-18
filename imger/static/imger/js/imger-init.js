@@ -9,7 +9,7 @@ $(document).ready(function (e){
 		height: 200,
 		mime: 'image/jpeg',
 		quality: 100,
-		autoborwse: true,
+		autobrowse: true,
 		note: "",
 		form: 'imger.imagename',
 	}

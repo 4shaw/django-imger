@@ -14,9 +14,10 @@ function Imger(options) {
 		$fileSelector = $('<input type="file" />'),
 
 		extentionTypes = [], // build dynamically from mimeTypes on initSetup
-		mimeTypes = ['image/jpg', 'image/png'],
-		mimeDefault = 'image/jpg',
-		mime = 'image/jpg',
+		mimeTypes = ['image/jpeg', 'image/png'],
+		mimeDefault = 'image/jpeg',
+		mime = 'image/jpeg',
+		extention = 'jpg',
 
 		$imgerBrowselBTN =
 		$imgerCancelBTN =
@@ -30,6 +31,7 @@ function Imger(options) {
 		$imgerFormSbmtBTN =
 		$imgerFormCancelBTN =
 		$imgerFormNote =
+		$imgerToolbarToolsWR =
 		file =
 		imagedata =
 		image =
@@ -93,7 +95,6 @@ function Imger(options) {
 	});
 
 	var initSetup = function(t) {
-		console.log('initSetup');
 		if(is_setup) return;
 
 		$imgerBrowselBTN = $('.imger-btn-browse');
@@ -109,6 +110,7 @@ function Imger(options) {
 		$imgerFormCancelBTN = $('.imger-form-cancel-btn');
 		$imgerFormNote = $('.imger-form-note');
 		$getURL = $('.get-URL');
+		$imgerToolbarToolsWR = $('.imger-toolbar-tools-wr');
 
 		imgerContext = $imgerCanvas[0].getContext('2d');
 
@@ -123,12 +125,14 @@ function Imger(options) {
 			},
 			imger: {
 				filename: function(v) {
-					console.log("imger.filename: " + v);
-					return true;
-					return v.match(/^[0-9a-zA-Z]$/);
+					var _v = v.replace(/[^a-z0-9\-]/gi, '');
+					return (_v.length > 0);
 				},
 				email: function(v) {
 
+				},
+				hasvalue: function(v) {
+					return (v.length > 0);
 				}
 			}
 		}
@@ -138,7 +142,6 @@ function Imger(options) {
 		for(var i = 0; i < mimeLength; i++) {
 			extentionTypes.push( mimeTypes[i].split('/').pop() );	
 		}
-		//console.log(extentionTypes);
 
 		forms = {
 			imger: {
@@ -151,9 +154,16 @@ function Imger(options) {
 							validate: 'imger.filename',
 							placeholder: "Image name",
 							name: "imagename",
-							addon: ".jpg",
+							required: true,
+							addon: function() { //Can be string or function that returns a string
+								return '.' + extention;
+							},
 							process: function(v) {
-								return v+'.jpg';
+								var _v = $.trim(v);
+								_v = _v.replace(' ', '-');
+								_v = _v.replace(/[^a-z0-9\-]/gi, '');
+								_v = _v.toLowerCase();
+								return _v + '.' + extention;
 							}
 						}
 					]
@@ -194,8 +204,6 @@ function Imger(options) {
 
 	var selectFile = function(e) {
 		file = $fileSelector[0].files[0];
-
-		//console.log(file);
 
 		if(file.type.indexOf('image') == -1) {
 			alert("Image file not recognised");
@@ -280,10 +288,7 @@ function Imger(options) {
 				var addonValue = '';
 
 				if(addon != null) {
-					if(typeof addon == 'function') {
-						addonValue = addon().toString();
-					}
-
+					if(typeof addon === 'function') addon = addon();
 					addonValue = '<span class="input-group-addon">'+addon.toString()+'</span>';
 				}
 
@@ -349,12 +354,12 @@ function Imger(options) {
 			.empty()
 			.append(form.compiled);
 
+		$imgerToolbarToolsWR.css('display', 'none');
 		$imgerForm.css('display', 'block');
 	}
 
 	var submitForm = function(e) {
 		var formData = form2js($imgerForm[0]);
-		console.log(formData);
 
 		var errors = formErrors(formData);
 		if(errors.length) {
@@ -396,10 +401,14 @@ function Imger(options) {
 			var required = key_or_xyz('required', field, false);
 			var value = object_dot_path(formData, field.name);
 
+			if(typeof value === 'undefined') {
+				value = '';
+			}
+
 			if(value == '' && required){
 				errors.push({
 					field: field.name,
-					err: "Empty",
+					err: "Required but empty",
 					placeholder: field.placeholder
 				});
 				continue;
@@ -409,10 +418,7 @@ function Imger(options) {
 
 			if( (validate = key_or_xyz('validate', field, false)) ) {
 				if(typeof validate == 'string') {
-					console.log("is_string");
 					validate = object_dot_path(validators, validate);
-
-					console.log(validate);
 				}
 
 				var validateResponse = validate(value);
@@ -442,11 +448,27 @@ function Imger(options) {
 	}
 
 	var formErrorHandler = function(errors) {
-		console.log(errors);
+		var s = "";
+		var length = errors.length;
+
+		for(var i = 0; i < length; i++) {
+			s += errors[i].placeholder + ": " + errors[i].err + "\n\r";
+		}
+
+		alert(s);
 	}
 
-	var cancelForm = function(e) {
+	var cancelForm = function(e, reset) {
+		$imgerToolbarToolsWR.css('display', 'block');
 		$imgerForm.css('display', 'none');
+
+		if(reset) {
+			$imgerForm
+					.find('form')
+					.each(function(i, e) {
+						e.reset();
+					});
+		}
 	}
 
 	var doneHandler = function(e) {
@@ -499,8 +521,6 @@ function Imger(options) {
 		if(initial) {
 			//minScale and initial scale are the same
 			minScale = scale = Math.max((w/imgW), (h/imgH));
-
-			console.log(scale, minScale);
 
 			staticAnchor = {
 				x: 0, y: 0,
@@ -555,7 +575,6 @@ function Imger(options) {
 	}
 
 	var onScalerSet = function(e) {
-		console.log('scaler set/end (apply algo)');
 		//@martin imgerCompress.load( image, $imgerCanvas.attr('id') );
 
 		//TODO*** using draw() for now
@@ -565,7 +584,7 @@ function Imger(options) {
 		setHistory('scale');
 	}
 
-	/* HISTORY MANAGER BEAATING ME 4NOW :) */
+	/* HISTORY MANAGER BEATING ME 4NOW :) */
 
 	var setHistory = function(s) {
 		switch(s) {
@@ -581,7 +600,7 @@ function Imger(options) {
 						limitX: (limitX+0)
 					}
 				);
-				console.log(history[history.length-1]);
+				//console.log(history[history.length-1]);
 			break;
 		}
 	}
@@ -622,6 +641,7 @@ function Imger(options) {
 	// Drag events
 
 	var onMouseDwn = function(e) {
+		if(translatePos === null) return;
 
         startDragOffset.x = e.clientX - translatePos.x;
         startDragOffset.y = e.clientY - translatePos.y;
@@ -656,11 +676,9 @@ function Imger(options) {
 
 	var keyDownHandler = function(e) {
 		if(e.which === 90 && e.ctrlKey) {
-			console.log('control + z');
 			handleHistory(true);
 		}
 		else if(e.which === 89 && e.ctrlKey) {
-			console.log('control + y');
 			handleHistory(false);
 		}
 	}
@@ -712,7 +730,6 @@ function Imger(options) {
 		var t_obj = null;
 
 		for(var i = 0; i < length; i++) {
-			console.log("object_dot_path; "+arr[i]);
 			if(i == 0) {
 				t_obj = obj[arr[0]]
 				if(objectAndKey && length == 1) return{obj: obj, key: arr[0]}
@@ -764,6 +781,9 @@ function Imger(options) {
 				mime = 'image/' + mime;
 			}
 		}
+
+		extention = mime.split('/').pop();
+		if(extention == 'jpeg') extention = 'jpg';
 
 		resampler_path = key_or_xyz('resampler', options, 'imger.default');
 		resampler = object_dot_path(resamplers, resampler_path);
@@ -822,6 +842,10 @@ function Imger(options) {
 	this.exit = function(options) {
 		//remove eventlisteners
 		addBindings(false, this);
+
+		cancelForm(null, true);
+
+		$imgerImageInfo.text('');
 
 		$imgerWR.detach();
 	}

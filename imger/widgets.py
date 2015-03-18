@@ -35,7 +35,12 @@ class ImgerWidget(forms.Widget):
 
         static_url = settings.STATIC_URL
 
+        if value is None:
+            currently = r''
+        else:
+            currently = r'%s' % (value)
+
         if not static_url.endswith('/'):
             static_url = r'%s/' % (static_url)
 
-        return mark_safe("%s<br/><button data-static_url=\"%s\" data-imger='%s' id=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" />" % (value, static_url, imger_json, name))
+        return mark_safe("<p>Currently: %s<br/>Change: <button data-static_url=\"%s\" data-imger='%s' id=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input value=\"%s\" id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" /></p>" % (value, static_url, imger_json, currently, name))
