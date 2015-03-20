@@ -37,10 +37,16 @@ class ImgerWidget(forms.Widget):
 
         if value is None:
             currently = r''
+            current_link = r'Nothing yet'
         else:
             currently = r'%s' % (value)
+            current_link = r'<a href="%s%s">%s</a>' % (
+                settings.MEDIA_URL,
+                value,
+                value
+            )
 
         if not static_url.endswith('/'):
             static_url = r'%s/' % (static_url)
 
-        return mark_safe("<p>Currently: %s<br/>Change: <button data-static_url=\"%s\" data-imger='%s' id=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span id=\"ImgerBrowseLabel\">No image selected...</span><input value=\"%s\" id=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" /></p>" % (value, static_url, imger_json, currently, name))
+        return mark_safe("<p>Currently: %s<br/>Change: <span><button data-static_url=\"%s\" data-imger='%s' class=\"ImgerBrowseBTN\" type=\"button\">Browse</button> <span class=\"ImgerBrowseLabel\">No image selected...</span><input value=\"%s\" class=\"ImgerDataURL\" name=\"%s\" type=\"hidden\" /></span></p>" % (current_link, static_url, imger_json, currently, name))

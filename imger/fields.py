@@ -2,6 +2,7 @@ from django.db import models
 from django.core import exceptions
 from imger.widgets import ImgerWidget
 from django.conf import settings
+import time
 import json
 import re
 import os
@@ -15,10 +16,12 @@ class ImgerField(models.Field):
     def __init__(
         self,
         upload_to='',
+        generate_name=None,
         imger_settings=None,
         **kwargs
     ):
         self.upload_to = upload_to
+        self.generate_name = generate_name
         self.imger_settings = imger_settings
 
         super(ImgerField, self).__init__(**kwargs)
@@ -42,6 +45,25 @@ class ImgerField(models.Field):
                 dataurl = r'%s' % arr[1]
 
                 formdata = json.loads(json_string)
+
+                imagename = formdata.get('imagename', '')
+                extention = formdata['meta']['save_ext']
+
+                if self.generate_name is not None:
+                    if imagename.endswith(extention):
+                        imagename = os.path.splitext(imagename)[0]
+
+                    imagename = r'%s%s' % (
+                        self.generate_name(imagename),
+                        extention
+                    )
+
+                if imagename == '':
+                    imagename = r'%s%s' % (
+                        time.strftime("%Y%m%d%H%M%S"),
+                        extention
+                    )
+
                 imgstr = re.search(r'base64,(.*)', dataurl).group(1)
 
                 media_path = settings.MEDIA_ROOT
@@ -56,13 +78,13 @@ class ImgerField(models.Field):
                 if not os.path.exists(path):
                     os.makedirs(path)
 
-                path = r'%s%s' % (path, formdata['imagename'])
+                path = r'%s%s' % (path, imagename)
 
                 output = open(path, 'wb')
                 output.write(imgstr.decode('base64'))
                 output.close()
 
-                return r'%s/%s' % (self.upload_to, formdata['imagename'])
+                return r'%s/%s' % (self.upload_to, imagename)
             else:
                 return value
         else:

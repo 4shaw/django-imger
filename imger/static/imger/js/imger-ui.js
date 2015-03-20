@@ -160,7 +160,7 @@ function Imger(options) {
 							},
 							process: function(v) {
 								var _v = $.trim(v);
-								_v = _v.replace(' ', '-');
+								_v = _v.replace(/\ /g, '-');
 								_v = _v.replace(/[^a-z0-9\-]/gi, '');
 								_v = _v.toLowerCase();
 								return _v + '.' + extention;
@@ -512,7 +512,8 @@ function Imger(options) {
 	var getMeta = function() {
 		return {
 			name: file.name,
-			extention: file.name.split('.').pop()
+			ext: '.' + file.name.split('.').pop(),
+			save_ext: '.' + extention
 		}
 	}
 
