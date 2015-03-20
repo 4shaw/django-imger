@@ -27,7 +27,7 @@ Quick start
         'imger',
     )
 
-4. Import ImgerField into your models.yp and create an ImgerField on a model::
+4. Import ImgerField into your models.py and create an ImgerField on a model::
 
     from imger.fields import ImgerField
 
@@ -39,7 +39,7 @@ Quick start
 
 	/static/imger
 
-5. Start the development server and visit http://127.0.0.1:8000/admin/
+6. Start the development server and visit http://127.0.0.1:8000/admin/
    Navigate to your model with the imger field and upolad an image
    (you'll need the Admin app enabled).
 
